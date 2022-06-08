@@ -1,0 +1,113 @@
+package a3;
+
+import java.util.Arrays;
+import java.util.Random;
+
+
+public class a3 {
+	
+	static int M1ROWS = 2;
+	static int M1COLS = 2;
+	static int M2ROWS = 2;
+	static int M2COLS = 2;
+	
+	static int matrix1[][] = populateMatrix(M1ROWS, M1COLS, 5);
+	static int matrix2[][] = populateMatrix(M2ROWS, M2COLS, 5);
+	static int matrixR[][] = new int[M1ROWS][M2COLS];
+			
+	public class multiplyMatricesWorker extends Thread{
+		
+		int[][] m1, m2;
+		int row, col, result;
+		
+		public multiplyMatricesWorker(int[][] m1, int[][] m2, int row, int col) {
+			this.m1 = m1;
+			this.m2 = m2;
+			this.row = row;
+			this.col = col;
+		}
+		
+		public void run() {
+			for(int k = 0; k < m1[row].length; k++) {
+				result = result + matrix1[row][k] * matrix2[k][col]; 
+			}			
+		}
+		
+		public int getResult() {
+			return result;
+		}
+	}
+	
+	public static void  main(String[] args) {
+		
+		multiplyMatrices(matrix1, matrix2);
+		for (int[] x : matrix1)
+		{
+			System.out.print("| ");
+			  for (int y : x)
+			   {
+			        System.out.printf("%4d", y);
+			   }
+			  System.out.print(" |");
+			  System.out.println();
+		}
+		
+		System.out.println();
+		
+		for (int[] x : matrix2)
+		{
+			System.out.print("| ");
+			  for (int y : x)
+			   {
+			        System.out.printf("%4d", y);
+			   }
+			  System.out.print(" |");
+			  System.out.println();
+		}
+		
+		System.out.println();
+		
+		for (int[] x : matrixR)
+		{
+			System.out.print("| ");
+			  for (int y : x)
+			   {
+			        System.out.printf("%6d", y);
+			   }
+			  System.out.print(" |");
+			  System.out.println();
+		}
+	}
+	
+	
+	private static void multiplyMatrices(int[][] m1, int[][] m2){
+		int sum = 0;
+		for(int i = 0; i < M1ROWS; i++){
+			for(int j = 0; j < M2COLS; j++){
+				for(int k = 0; k < M1COLS; k++) {
+					sum = sum + matrix1[i][k] * matrix2[k][j]; 
+				}
+				matrixR[i][j] = sum;
+				sum = 0;				
+			}
+		}
+	}
+	
+	//method takes in 2D array rows, cols, and max for the random number generator (0 - max)
+	//returns matrix of that size populated with random numbers
+	private static int[][] populateMatrix(int rows, int cols, int upperBound) {
+		int[][] matrix = new int[rows][cols];
+		for(int i=0; i < rows; i++){
+	        for(int j=0; j < cols; j++){
+	            matrix[i][j] = randomNumber(upperBound);
+	        }
+	    }		
+		return matrix;	
+	}
+	
+	
+	static int randomNumber(int upperBound) {
+		Random rand = new Random();		
+		return rand.nextInt(upperBound) + 1;
+	}
+}
